@@ -1,0 +1,15 @@
+# secrets — NEVER commit
+.env
+
+# python
+venv/
+__pycache__/
+*.pyc
+
+# database (contains reservation data)
+gifts.db
+*.db
+
+# vscode / OS
+.vscode/
+.DS_Store
