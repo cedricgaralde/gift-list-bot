@@ -103,3 +103,9 @@ def unreserve_gift(gift_name: str, user_id: str, is_admin: bool = False) -> tupl
         if cur.rowcount == 1:
             return True, f"✅ **{gift_name}** is now available again."
         return False, f"❌ You can't unreserve **{gift_name}** (not yours, or not reserved)."
+
+def clear_all_gifts() -> int:
+    """Delete every gift. Returns how many were removed."""
+    with get_db() as db:
+        cur = db.execute("DELETE FROM gifts")
+        return cur.rowcount

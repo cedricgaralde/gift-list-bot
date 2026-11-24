@@ -4,7 +4,7 @@ from discord.ext import commands
 import config
 from models import (
     init_db, all_gifts, my_reservations, add_gift, remove_gift,
-    reserve_gift, unreserve_gift, get_gift,
+    reserve_gift, unreserve_gift, get_gift, clear_all_gifts,
 )
 from intents import parse, resolve_gift_name
 
@@ -14,12 +14,12 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 
 HELP_TEXT = (
     "👋 **Gift List Bot** — here's what I can do:\n"
-    "• `list` — show all gifts (available + reserved)\n"
-    "• `is <gift> available?` — check one gift\n"
-    "• `reserve <gift>` — claim a gift (locks it for others)\n"
-    "• `unreserve <gift>` — release a gift you reserved\n"
-    "• `my reservations` — see what you've claimed\n"
-    "Fuzzy matching is on: `reserve blnder` will find *Blender*."
+    "• `list` — show all gifts\n"
+    "• `is <gift> available?` — check one\n"
+    "• `reserve <gift>` — claim a gift\n"
+    "• `unreserve <gift>` — release one you reserved\n"
+    "• `my reservations` — your claims\n"
+    "Admins: `add <gift>`, `remove <gift>`, `admin list`, `clear`"
 )
 
 def is_admin(user_id: int) -> bool:
@@ -106,6 +106,13 @@ def handle_message(user_id: str, message: str) -> str:
                 return f"❌ No gift like **{p['gift']}**."
             ok = remove_gift(resolved)
             return f"🗑️ Removed **{resolved}**." if ok else "Failed to remove."
+
+        if intent == "admin_clear":
+            if not is_admin(int(user_id)):
+                return "🚫 That command is for admins only."
+            n=clear_all_gifts()
+            return f"🗑️ Cleared the list. Removed {n} gifts."
+        
 
         if intent == "admin_list":
             rows = all_gifts()

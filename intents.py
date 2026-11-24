@@ -67,9 +67,14 @@ def parse(message: str) -> dict:
     m = re.match(r"^(remove|delete)\s+(.+)$", low)
     if m:
         return {"intent": "admin_remove", "gift": m.group(2).strip()}
-
+    
+    m = re.match(r"^clear$", low)
+    if m:
+        return {"intent": "admin_clear"}
+    
     m = re.match(r"^admin list$", low)
     if m:
         return {"intent": "admin_list"}
 
     return {"intent": "unknown", "text": text}
+
